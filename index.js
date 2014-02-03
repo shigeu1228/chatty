@@ -30,9 +30,6 @@ search(encodeURI(key_word), function(err, result) {
 	_(result.statuses).forEach(function(data) {
 		segmenter.segment(words_store, filter(data.text));
 	});
-	console.log("================");
-	console.log(words_store);
-	console.log("================");
 	console.log(markov.create_message(words_store));
 
 });

@@ -1,44 +1,18 @@
-var consumer_key = process.env.HUBOT_TWITTER_CONSUMER_KEY;
-var consumer_secret = process.env.HUBOT_TWITTER_CONSUMER_SECRET;
-var access_token = process.env.HUBOT_TWITTER_ACCESS_TOKEN;
-var access_token_secret = process.env.HUBOT_TWITTER_ACCESS_TOKEN_SECRET;
-var ts = require("tiny_segmenter-0.2");
-var segmenter = new ts.TinySegmenter();     
-
+var account = require("./account.js");
+var ts = new require("./lib/tiny_segmenter-0.2");
 var twitter = require('ntwitter');
+
+var segmenter = new ts.TinySegmenter();     
 var twit = new twitter({
-    consumer_key: consumer_key,
-    consumer_secret: consumer_secret,
-    access_token_key: access_token,
-    access_token_secret: access_token_secret
+    consumer_key: account.consumer_key,
+    consumer_secret: account.consumer_secret,
+    access_token_key: account.access_token,
+    access_token_secret: account.access_token_secret
 });
 var segs = {};
-module.exports = function(robot) {
-	robot.respond(/testtest (.*)/i, function(msg){
-		var today = new Date();
-		console.log(msg.match[1]);
 
-		
-		seg("[定期]私はAKB48を、流行じゃなくて日本の文化にしたいです。byゆきりん");
-		console.log(markov());
 
-/*
-		search('akb48', function(err, data) {
-			if (err) {
-				console.log(err.massage);
-			} else {
-				for (var i in data.statuses) {
-					console.log("====");
-					console.log(data.statuses[i].text);
-				}
-				console.log("====");
-			}
-		});
-*/
-
-		msg.reply(today.getDate() == 25 && (today.getMonth() + 1) == 12 ? "YES" : "NO");
-	});
-}
+seg("[定期]私はAKB48を、流行じゃなくて日本の文化にしたいです。byゆきりん");
 
 function markov() {
 	var msg = "";
@@ -77,6 +51,7 @@ function seg(msg) {
 			segs[strs[i]] = seg;
 		})(i);
 	}
+	console.log(segs);
 }
 
 function search(q, callback) {

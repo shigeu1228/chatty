@@ -1,64 +1,45 @@
 var account = require("./account.js");
-var ts = new require("./lib/tiny_segmenter-0.2");
-var twitter = require('ntwitter');
-
-var segmenter = new ts.TinySegmenter();     
+var twitter = require("ntwitter");
+var keys = require("./lib/keys.js");
+var segmenter = require("./lib/segmenter.js");
+var markov = require("./lib/markov.js");
+var _ = require("lodash");
+var filter = require("./lib/message_filter.js");
+ 
 var twit = new twitter({
     consumer_key: account.consumer_key,
     consumer_secret: account.consumer_secret,
     access_token_key: account.access_token,
     access_token_secret: account.access_token_secret
 });
-var segs = {};
 
+var words_store = {};
 
-seg("[定期]私はAKB48を、流行じゃなくて日本の文化にしたいです。byゆきりん");
-
-function markov() {
-	var msg = "";
-	var begin_candidates = segs["__begin__"];
-	if (begin_candidates.length == 0) {
-		return msg;
-	}
-	var last_word = begin_candidates[Math.floor( Math.random() * begin_candidates.length )];
-	msg += last_word;
-
-	while(last_word !== "__end__") {
-		(function(){
-			var pick_candidates = segs[last_word];
-			var pick_word = pick_candidates[Math.floor( Math.random() * pick_candidates.length )];
-			if (pick_word !== "__end__") {
-				msg += pick_word;
-			}
-			last_word = pick_word;
-		})();
-	}
-	return msg;
+// check search word
+var key_word = process.argv[2] || "";
+if (_.isEmpty(key_word)) {
+	return;
 }
 
-function seg(msg) {
-	var strs = segmenter.segment(msg);
-	strs.unshift("__begin__");
-	strs.push("__end__");
+console.log(filter(key_word));
 
-	for (var i = 0; i< strs.length - 1; i++) {
-		(function(i){
-			var seg = segs[strs[i]];
-			if (!seg) {
-				seg = [];
-			}
-			seg.push(strs[i + 1]);
-			segs[strs[i]] = seg;
-		})(i);
+// run
+search(encodeURI(key_word), function(err, result) {
+
+	if (err) {
+		console.log(err);
+		return;
 	}
-	console.log(segs);
-}
+	_(result.statuses).forEach(function(data) {
+		console.log(data.text);
+	});
+});
 
 function search(q, callback) {
-	var url = 'https://api.twitter.com/1.1/search/tweets.json';
+	var url = keys.twitter_search_url;
 	var params = {
 		q: q,
 		count: 3
 	}
-  	twit.get(url, params, callback);
+ // 	twit.get(url, params, callback);
 }

@@ -21,25 +21,27 @@ if (_.isEmpty(key_word)) {
 	return;
 }
 
-console.log(filter(key_word));
-
 // run
 search(encodeURI(key_word), function(err, result) {
-
 	if (err) {
 		console.log(err);
 		return;
 	}
 	_(result.statuses).forEach(function(data) {
-		console.log(data.text);
+		segmenter.segment(words_store, filter(data.text));
 	});
+	console.log("================");
+	console.log(words_store);
+	console.log("================");
+	console.log(markov.create_message(words_store));
+
 });
 
 function search(q, callback) {
 	var url = keys.twitter_search_url;
 	var params = {
 		q: q,
-		count: 3
+		count: 20
 	}
- // 	twit.get(url, params, callback);
+  	twit.get(url, params, callback);
 }

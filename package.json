@@ -1,0 +1,7 @@
+{
+  "name": "chatty",
+  "version": "0.0.1",
+  "dependencies": {
+    "ntwitter": "0.5.0"
+  }
+}

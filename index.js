@@ -5,6 +5,7 @@ var segmenter = require("./lib/segmenter.js");
 var markov = require("./lib/markov.js");
 var _ = require("lodash");
 var filter = require("./lib/message_filter.js");
+var suggest = require("./lib/suggest.js");
  
 var twit = new twitter({
     consumer_key: account.consumer_key,

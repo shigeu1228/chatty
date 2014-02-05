@@ -5,7 +5,7 @@ var segmenter = require("./lib/segmenter.js");
 var markov = require("./lib/markov.js");
 var _ = require("lodash");
 var filter = require("./lib/message_filter.js");
-var suggest = require("./lib/suggest.js");
+var writer = require("./lib/writer.js");
  
 var twit = new twitter({
     consumer_key: account.consumer_key,
@@ -32,6 +32,9 @@ search(encodeURI(key_word), function(err, result) {
 		segmenter.segment(words_store, filter(data.text));
 	});
 	console.log(markov.create_message(words_store));
+	writer(words_store, function() {
+		console.log("end");
+	});
 
 });
 

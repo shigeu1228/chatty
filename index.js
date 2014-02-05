@@ -31,9 +31,18 @@ search(encodeURI(key_word), function(err, result) {
 	_(result.statuses).forEach(function(data) {
 		segmenter.segment(words_store, filter(data.text));
 	});
-	console.log(markov.create_message(words_store));
+	var msg = markov.create_message(words_store);
+	console.log(msg);
+	if (msg.length > 140) {
+		msg = msg.substring(0,139);
+	}
 	writer(words_store, function() {
 		console.log("end");
+		twit.updateStatus(msg, function(err) {
+			if (err) {
+				console.log(err);
+			}
+		});
 	});
 
 });
